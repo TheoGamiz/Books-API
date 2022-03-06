@@ -2,7 +2,7 @@ const restify = require('restify');
 
 const database = require('./database');
 const UserController = require('./controllers/user-controller');
-const NotesController = require('./controllers/books-controller');
+const BooksController = require('./controllers/books-controller');
 const Users = require('./models/users');
 
 
@@ -60,17 +60,17 @@ const app = restify.createServer();
 
 
 
-  // Patch note
+  // Patch book
   app.patch('/books/:id', (req, res) => {
     const token = req.header('x-access-token');
-    const noteID = req.params.id;
-    const noteContent = req.body.content;
+    const bookID = req.params.id;
+    const bookContent = req.body.content;
 
-    NotesController.modifyNote(
+    BooksController.modifyBook(
       token,
-      noteID,
-      noteContent,
-      (statusCode, errorMessage, note) => {
+      bookID,
+      bookContent,
+      (statusCode, errorMessage, book) => {
         if (statusCode !== 200) {
           return res.send(statusCode, {
             error: errorMessage
@@ -78,17 +78,17 @@ const app = restify.createServer();
         }
         return res.send(200, {
           error: null,
-          note: note
+          book: book
         });
       }
     );
   });
 
-// Get notes
+// Get books
 app.get('/books', (req, res) => {
   const token = req.header('x-access-token');
 
-  NotesController.getNotes(token, (statusCode, errorMessage, notes) => {
+  BooksController.getBooks(token, (statusCode, errorMessage, books) => {
     if (statusCode !== 200) {
       return res.send(statusCode, {
         error: errorMessage
@@ -96,22 +96,22 @@ app.get('/books', (req, res) => {
     }
     return res.send(200, {
       error: null,
-      notes: notes
+      books: books
     });
   });
 });
 
 
 
-   // Add note
-   app.put('/books', (req, res) => {
+   // Add book
+   app.post('/books', (req, res) => {
     const token = req.header('x-access-token');
-    const noteContent = req.body.content || '';
+    const bookContent = req.body.content || '';
 
-    NotesController.addNote(
+    BooksController.addBook(
       token,
-      noteContent,
-      (statusCode, errorMessage, note) => {
+      bookContent,
+      (statusCode, errorMessage, book) => {
         if (statusCode !== 200) {
           return res.send(statusCode, {
             error: errorMessage
@@ -119,7 +119,7 @@ app.get('/books', (req, res) => {
         }
         return res.send(200, {
           error: null,
-          note: note
+          book: book
         });
       }
     );
@@ -128,12 +128,12 @@ app.get('/books', (req, res) => {
 
 
   
-  // Delete note
+  // Delete book
   app.del('/books/:id', (req, res) => {
     const token = req.header('x-access-token');
-    const noteID = req.params.id;
+    const bookID = req.params.id;
 
-    NotesController.deleteNote(token, noteID, (statusCode, errorMessage) => {
+    BooksController.deleteBook(token, bookID, (statusCode, errorMessage) => {
       if (statusCode !== 200) {
         return res.send(statusCode, {
           error: errorMessage

@@ -1,0 +1,27 @@
+version: '3.9'
+
+services: 
+  mongo_db: 
+    container_name: db_container
+    image: mongo:latest
+    restart: always
+    volumes: 
+      - mongo_db:/data/db
+
+
+  api: 
+    build: .
+    ports: 
+      - 4000:3000
+    environment:
+      PORT: 3000
+      DB_NAME: Books
+      MONGODB_URI: mongodb+srv://admin:admin@books.dr3yt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+      JWT_KEY: jwtsecretkey
+    depends_on:
+      - mongo_db
+
+
+
+volumes:
+  mongo_db: {}

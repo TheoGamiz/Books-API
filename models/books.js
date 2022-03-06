@@ -1,64 +1,64 @@
 const database = require('../database');
 
-const Notes = {};
+const Books = {};
 
-// Get notes
-Notes.getAll = (userID, callback) => {
-  const notesCollection = database.db.collection('notes');
+// Get books
+Books.getAll = (userID, callback) => {
+  const booksCollection = database.db.collection('books');
 
-  notesCollection
+  booksCollection
     .find({
       userId: userID
     })
     .toArray(callback);
 };
 
-// Get note
-Notes.get = (noteID, callback) => {
-  const notesCollection = database.db.collection('notes');
+// Get book
+Books.get = (bookID, callback) => {
+  const booksCollection = database.db.collection('books');
 
-  notesCollection
+  booksCollection
     .find({
-      _id: noteID
+      isbn: bookID
     })
     .sort({
       createdAt: -1
     })
-    .toArray((error, notes) => {
-      return callback(error, notes[0]);
+    .toArray((error, books) => {
+      return callback(error, books[0]);
     });
 };
 
-// Add note
-Notes.add = (content, userID, callback) => {
-  const notesCollection = database.db.collection('notes');
+// Add book
+Books.add = (content, userID, callback) => {
+  const booksCollection = database.db.collection('books');
 
-  const note = {
+  const book = {
     content: content,
     userId: userID,
     createdAt: new Date(),
     lastUpdatedAt: null
   };
 
-  notesCollection.insertOne(note, (error, addedNote) => {
+  booksCollection.insertOne(book, (error, addedBook) => {
     callback(error, {
-      _id: addedNote.insertedId,
-      ...note
+      isbn: addedBook.insertedId,
+      ...book
     });
   });
 };
 
-// Patch note
-Notes.patch = (noteID, noteContent, callback) => {
-  const notesCollection = database.db.collection('notes');
+// Patch book
+Books.patch = (bookID, bookContent, callback) => {
+  const booksCollection = database.db.collection('books');
 
-  notesCollection.findOneAndUpdate(
+  booksCollection.findOneAndUpdate(
     {
-      _id: noteID
+      isbn: bookID
     },
     {
       $set: {
-        content: noteContent,
+        content: bookContent,
         lastUpdatedAt: new Date()
       }
     },
@@ -69,16 +69,16 @@ Notes.patch = (noteID, noteContent, callback) => {
   );
 };
 
-// Delete note
-Notes.delete = (noteID, callback) => {
-  const notesCollection = database.db.collection('notes');
+// Delete book
+Books.delete = (bookID, callback) => {
+  const booksCollection = database.db.collection('books');
 
-  notesCollection.deleteOne(
+  booksCollection.deleteOne(
     {
-      _id: noteID
+      isbn: bookID
     },
     callback
   );
 };
 
-module.exports = Notes;
+module.exports = Books;

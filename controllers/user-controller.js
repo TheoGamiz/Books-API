@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 const Users = require('../models/users');
@@ -34,7 +33,7 @@ UserController.signup = async (username, password, callback) => {
 
   const user = {
     username: username,
-    password: bcrypt.hashSync(password, 10)
+    password: password
   };
 
   Users.insert(user);
@@ -66,7 +65,7 @@ UserController.signin = async (username, password, callback) => {
   const users = await Users.getAll();
   for (const user of users) {
     if (user.username === username) {
-      if (!bcrypt.compareSync(password, user.password)) {
+      if (!user.password) {
         return callback(400, 'Mot de passe invalide');
       }
 

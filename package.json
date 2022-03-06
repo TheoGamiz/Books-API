@@ -24,11 +24,11 @@
   },
   "homepage": "https://github.com/nguyen1909/API-note#readme",
   "dependencies": {
-    "bcrypt": "^5.0.1",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.6",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
+    "node-isbn": "^1.6.1",
     "restify": "^8.5.1"
   },
   "devDependencies": {

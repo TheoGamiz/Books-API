@@ -1,12 +1,13 @@
 const jwt = require('jsonwebtoken');
 const ObjectID = require('mongodb').ObjectID;
+var isbn = require('node-isbn');
 require('dotenv').config();
 
-const Notes = require('../models/books');
+const Books = require('../models/books');
 
-const NotesController = {};
+const BooksController = {};
 
-NotesController.getNotes = (token, callback) => {
+BooksController.getBooks = (token, callback) => {
   if (!token) {
     return callback(401, 'Utilisateur non connecté');
   }
@@ -16,9 +17,9 @@ NotesController.getNotes = (token, callback) => {
       return callback(401, 'Utilisateur non connecté');
     }
 
-    let userID = authUser._id;
+    let userID = authUser.isbn;
 
-    Notes.getAll(userID, (error, books) => {
+    Books.getAll(userID, (error, books) => {
       if (error) {
         return callback(500, 'Impossible de récupérer la liste de livres');
       }
@@ -27,7 +28,7 @@ NotesController.getNotes = (token, callback) => {
   });
 };
 
-NotesController.addNote = (token, bookContent, callback) => {
+BooksController.addBook = (token, bookContent, callback) => {
   if (!token) {
     return callback(401, 'Utilisateur non connecté');
   }
@@ -37,9 +38,9 @@ NotesController.addNote = (token, bookContent, callback) => {
       return callback(401, 'Utilisateur non connecté');
     }
 
-    const userID = authUser._id;
+    const userID = authUser.isbn;
 
-    Notes.add(bookContent, userID, (error, book) => {
+    Books.add(bookContent, userID, (error, book) => {
       if (error) {
         return callback(500, 'Impossible de créer le livre');
       }
@@ -50,7 +51,7 @@ NotesController.addNote = (token, bookContent, callback) => {
   });
 };
 
-NotesController.modifyNote = (token, bookID, bookContent, callback) => {
+BooksController.modifyBook = (token, bookID, bookContent, callback) => {
   if (!token) {
     return callback(401, 'Utilisateur non connecté');
   }
@@ -60,22 +61,22 @@ NotesController.modifyNote = (token, bookID, bookContent, callback) => {
       return callback(401, 'Utilisateur non connecté');
     }
 
-    let formattedNoteID;
+    let formattedBookID;
     try {
-      formattedNoteID = new ObjectID(bookID);
+      formattedBookID = new isbn(bookID);
     } catch (error) {
       return callback(404, 'Cet identifiant est inconnu');
     }
 
-    Notes.get(formattedNoteID, (error, book) => {
+    Books.get(formattedBookID, (error, book) => {
       if (error || !book) {
         return callback(404, 'Cet identifiant est inconnu');
       }
-      if (book.userId !== authUser._id) {
+      if (book.userId !== authUser.isbn) {
         return callback(403, 'Accès non autorisé à ce livre');
       }
 
-      Notes.patch(book._id, bookContent, (error, book) => {
+      Books.patch(book._isbn, bookContent, (error, book) => {
         if (error || !book) {
           return callback(500, 'Impossible de modifier le livre');
         }
@@ -85,7 +86,7 @@ NotesController.modifyNote = (token, bookID, bookContent, callback) => {
   });
 };
 
-NotesController.deleteNote = (token, bookID, callback) => {
+BooksController.deleteBook = (token, bookID, callback) => {
   if (!token) {
     return callback(401, 'Utilisateur non connecté');
   }
@@ -95,22 +96,22 @@ NotesController.deleteNote = (token, bookID, callback) => {
       return callback(401, 'Utilisateur non connecté');
     }
 
-    let formattedNoteID;
+    let formattedBookID;
     try {
-      formattedNoteID = new ObjectID(bookID);
+      formattedBookID = new isbn(bookID);
     } catch (error) {
       return callback(404, 'Cet identifiant est inconnu');
     }
 
-    Notes.get(formattedNoteID, (error, book) => {
+    Books.get(formattedBookID, (error, book) => {
       if (error || !book) {
         return callback(404, 'Cet identifiant est inconnu');
       }
-      if (book.userId !== authUser._id) {
+      if (book.userId !== authUser.isbn) {
         return callback(403, 'Accès non autorisé à ce livre');
       }
 
-      Notes.delete(book._id, (error) => {
+      Books.delete(book.isbn, (error) => {
         if (error) {
           return callback(500, 'Impossible de supprimer le livre.');
         }
@@ -120,4 +121,4 @@ NotesController.deleteNote = (token, bookID, callback) => {
   });
 };
 
-module.exports = NotesController;
+module.exports = BooksController;
