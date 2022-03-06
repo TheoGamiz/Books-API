@@ -2,8 +2,7 @@ const restify = require('restify');
 
 const database = require('./database');
 const UserController = require('./controllers/user-controller');
-const NotesController = require('./controllers/notes-controller');
-const HeroController = require('./controllers/hero-controller');
+const NotesController = require('./controllers/books-controller');
 const Users = require('./models/users');
 
 
@@ -59,84 +58,10 @@ const app = restify.createServer();
     );
   });
 
-  //add Hero
-  app.post('/addhero', (req, res) => {
-    const { name, description } = req.body;
 
-    HeroController.addhero(name, description, (statusCode, errorMessage) => {
-      if (statusCode !== 200) {
-        return res.send(statusCode, {
-          error: errorMessage
-        });
-      }
-      return res.send(200, {
-        error: null
-      });
-    });
-  });
-
-  //get Heros
-  app.get('/getheros', (req, res) => {
-    
-
-    HeroController.getheros((heros) => {
-      
-      return res.send(200, {
-        error: null,
-        heros: heros
-      });
-    });
-  });
-
-
-
-  //delete hero 
-  app.del('/heros/:id', (req, res) => {
-    
-    const heroID = req.params.id;
-    
-    HeroController.deleteHero(heroID, (statusCode, errorMessage) => {
-      if (statusCode !== 200) {
-        return res.send(statusCode, {
-          error: errorMessage
-        });
-      }
-      return res.send(200, {
-        error: null
-       
-      });
-    });
-  });
-
-
-
-  // Patch hero
-  app.patch('/hero/:id', (req, res) => {
-    
-    const heroID = req.params.id;
-    const description = req.body.description;
-    
-
-    HeroController.modifyHero(
-      heroID,
-      description,
-      
-      (statusCode, errorMessage, hero) => {
-        if (statusCode !== 200) {
-          return res.send(statusCode, {
-            error: errorMessage
-          });
-        }
-        return res.send(200, {
-          error: null,
-          note: hero
-        });
-      }
-    );
-  });
 
   // Patch note
-  app.patch('/notes/:id', (req, res) => {
+  app.patch('/books/:id', (req, res) => {
     const token = req.header('x-access-token');
     const noteID = req.params.id;
     const noteContent = req.body.content;
@@ -160,7 +85,7 @@ const app = restify.createServer();
   });
 
 // Get notes
-app.get('/notes', (req, res) => {
+app.get('/books', (req, res) => {
   const token = req.header('x-access-token');
 
   NotesController.getNotes(token, (statusCode, errorMessage, notes) => {
@@ -179,7 +104,7 @@ app.get('/notes', (req, res) => {
 
 
    // Add note
-   app.put('/notes', (req, res) => {
+   app.put('/books', (req, res) => {
     const token = req.header('x-access-token');
     const noteContent = req.body.content || '';
 
@@ -204,7 +129,7 @@ app.get('/notes', (req, res) => {
 
   
   // Delete note
-  app.del('/notes/:id', (req, res) => {
+  app.del('/books/:id', (req, res) => {
     const token = req.header('x-access-token');
     const noteID = req.params.id;
 
