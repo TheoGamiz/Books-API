@@ -23,15 +23,17 @@ BooksController.getBooks = (token, callback) => {
       if (error) {
         return callback(500, 'Impossible de récupérer la liste de livres');
       }
-      return callback(200, null, books);
+      return callback(200, 'OK', books);
     });
   });
 };
 
-BooksController.addBook = (token, bookContent, callback) => {
+BooksController.addBook = (token, title, author, overview, picture, read_count, callback) => {
   if (!token) {
     return callback(401, 'Utilisateur non connecté');
   }
+
+  
 
   jwt.verify(token, process.env.JWT_KEY, (error, authUser) => {
     if (error || !authUser) {
@@ -40,12 +42,20 @@ BooksController.addBook = (token, bookContent, callback) => {
 
     const userID = authUser.isbn;
 
-    Books.add(bookContent, userID, (error, book) => {
+    Books.add(title, author, overview, picture, read_count, (error, book) => {
       if (error) {
         return callback(500, 'Impossible de créer le livre');
       }
+
+      if (!title) {
+        return callback(422,'Unprocessable Entity', error);
+      }
+    
+      if (!author) {
+        return callback(422,'Unprocessable Entity', error);
+      }
       if (book) {
-        return callback(200, null, book);
+        return callback(201, 'Created', book);
       }
     });
   });
@@ -70,7 +80,7 @@ BooksController.modifyBook = (token, bookID, bookContent, callback) => {
 
     Books.get(formattedBookID, (error, book) => {
       if (error || !book) {
-        return callback(404, 'Cet identifiant est inconnu');
+        return callback(404, 'Not Found');
       }
       if (book.userId !== authUser.isbn) {
         return callback(403, 'Accès non autorisé à ce livre');
@@ -80,7 +90,7 @@ BooksController.modifyBook = (token, bookID, bookContent, callback) => {
         if (error || !book) {
           return callback(500, 'Impossible de modifier le livre');
         }
-        return callback(200, null, book.value);
+        return callback(200, 'OK', book.value);
       });
     });
   });
@@ -115,7 +125,7 @@ BooksController.deleteBook = (token, bookID, callback) => {
         if (error) {
           return callback(500, 'Impossible de supprimer le livre.');
         }
-        return callback(200);
+        return callback(200, "OK");
       });
     });
   });

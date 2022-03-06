@@ -30,12 +30,16 @@ Books.get = (bookID, callback) => {
 };
 
 // Add book
-Books.add = (content, userID, callback) => {
+Books.add = (title, author, overview, picture, read_count, callback) => {
   const booksCollection = database.db.collection('books');
 
   const book = {
-    content: content,
-    userId: userID,
+    title: title,
+    author: author,
+    overview : overview,
+    picture: picture,
+    read_count: read_count,
+
     createdAt: new Date(),
     lastUpdatedAt: null
   };

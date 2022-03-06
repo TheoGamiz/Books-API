@@ -106,18 +106,35 @@ app.get('/books', (req, res) => {
    // Add book
    app.post('/books', (req, res) => {
     const token = req.header('x-access-token');
-    const bookContent = req.body.content || '';
+    const bookTitle = req.body.title || '';
+    const bookAuthor = req.body.author || '';
+    const bookOverview = req.body.overview || '';
+    const bookPicture = req.body.picture || '';
+    const bookReadCount = req.body.read_count || '';
+
 
     BooksController.addBook(
       token,
-      bookContent,
+      bookTitle,
+      bookAuthor,
+      bookOverview,
+      bookPicture,
+      bookReadCount,
+
       (statusCode, errorMessage, book) => {
-        if (statusCode !== 200) {
+        if (statusCode !== 201) {
           return res.send(statusCode, {
             error: errorMessage
           });
         }
-        return res.send(200, {
+
+        if (statusCode === 422) {
+          return res.send(statusCode, {
+            error: errorMessage
+          });
+        }
+
+        return res.send(201, {
           error: null,
           book: book
         });
