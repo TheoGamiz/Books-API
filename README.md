@@ -1,13 +1,13 @@
-# API-note
+# Books-API
 
-#### This is an HTTP API made with Restify for managing personal notes.
+#### This is an HTTP API made with Restify for managing personal books.
 
 ## Get started
 
 #### Clone project
 
-`$ git clone git@github.com:nguyen.1909/API-note.git`<br/>
-`$ cd API-note`
+`$ git clone git@github.com:TheoGamiz/Books-API.git`<br/>
+`$ cd Books-API`
 
 #### Install the dependencies
 
@@ -17,10 +17,6 @@
 
 `$ npm start` or `$ npm run dev`<br/>
 
-## Environment
-
-**The API is deployed with [Heroku](https://www.heroku.com) on https://api-note-3moc.herokuapp.com/**<br/>
-_GitHub integration is enabled, so the API is automatically re-deployed on Heroku when there is a new push on `main`_
 
 #### Environment variables
 
@@ -57,7 +53,7 @@ You can execute them by running : <br/>
 - `password` (Minimum 4 characters)
   <br/>
 
-#### GET /notes
+#### GET /books
 
 ##### Request
 
@@ -66,43 +62,43 @@ You can execute them by running : <br/>
 - `x-access-token` (JWT token)
   <br/>
 
-#### PUT /notes
+#### PUT /books
 
 ##### Request
 
 ###### Body
 
-- `content` (Note content)
+- `content` (Book content)
 
 ###### Headers
 
 - `x-access-token` (JWT token)
   <br/>
 
-#### PATCH /notes/:id
+#### PATCH /books/:id
 
 ##### Request
 
 ###### Parameters
 
-- `id` (Note ID)
+- `id` (Book ID)
 
 ###### Body
 
-- `content` (Note content)
+- `content` (Book content)
 
 ###### Headers
 
 - `x-access-token` (JWT token)
   <br/>
 
-#### DELETE /notes/id
+#### DELETE /books/id
 
 ##### Request
 
 ###### Parameters
 
-- `id` (Note ID)
+- `id` (Book ID)
 
 ###### Headers
 
@@ -110,7 +106,6 @@ You can execute them by running : <br/>
 
 ## Contributor
 
-- NGUYEN David
-- VALLEE Gwendal
-- BROUILLE Théo
+- BUCHER Quentin
+- MESSAI Rafiq
 - GAMIZ Théo
